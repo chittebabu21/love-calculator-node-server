@@ -5,6 +5,10 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cheerio = require('cheerio');
+const path = require('path');
+
+// configure build path
+const buildPath = path.join(__dirname, '/react-client/build');
 
 // configure dotenv
 dotenv.config();
@@ -14,6 +18,9 @@ const app = express();
 
 // declare the port
 const port = process.env.PORT || 3000;
+
+// use build files
+app.use(express.static(buildPath));
 
 // use cors
 app.use(cors({ origin: '*' }));
@@ -48,7 +55,7 @@ async function scrapeData(keywords, maxCount) {
     // try catch block to handle exceptions
     try {
         // make the request
-        const response = await axios.get(`https://tetw.org/${keywords}`);
+        const response = await axios.get(`${process.env.WEB_SCRAPPER_URL}${keywords}`);
         const $ = cheerio.load(response.data);
         console.log(response.data);
 
@@ -87,6 +94,22 @@ async function scrapeData(keywords, maxCount) {
         // throw the error
         throw error;
     }
+}
+
+// get static files
+if (process.env.NODE_ENV === 'production') {
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'react-client', 'build', 'index.html'), (error) => {
+            if (error) {
+                // error handling
+                console.error(error);
+                return res.status(500).json({
+                    success: 0,
+                    error: 'An error occured!'
+                });
+            }
+        });
+    });
 }
 
 // endpoint to accept the data
