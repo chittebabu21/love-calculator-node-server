@@ -8,7 +8,7 @@ const cheerio = require('cheerio');
 const path = require('path');
 
 // configure build path
-const buildPath = path.join(__dirname, '/react-client/build');
+// const buildPath = path.join(__dirname, '/react-client/build');
 
 // configure dotenv
 dotenv.config();
@@ -97,20 +97,20 @@ async function scrapeData(keywords, maxCount) {
 }
 
 // get static files
-if (process.env.NODE_ENV === 'production') {
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'react-client', 'build', 'index.html'), (error) => {
-            if (error) {
-                // error handling
-                console.error(error);
-                return res.status(500).json({
-                    success: 0,
-                    error: 'An error occured!'
-                });
-            }
-        });
-    });
-}
+// if (process.env.NODE_ENV === 'production') {
+//     app.get('*', (req, res) => {
+//         res.sendFile(path.join(__dirname, 'react-client', 'build', 'index.html'), (error) => {
+//             if (error) {
+//                 // error handling
+//                 console.error(error);
+//                 return res.status(500).json({
+//                     success: 0,
+//                     error: 'An error occured!'
+//                 });
+//             }
+//         });
+//     });
+// }
 
 // endpoint to accept the data
 app.post('/', async (req, res) => {
